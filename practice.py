@@ -2,4 +2,4 @@ from turtle import clone
 
 
 print("Hello!!!")
-print("Welcome to page")
+print("Welcome to python")
