@@ -1,0 +1,48 @@
+//초음파센서1개
+int echo = 8; //핀번호
+int trig = 12;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(trig, OUTPUT); //송신
+  pinMode(echo, INPUT); //수신
+  pinMode(3, OUTPUT); //진동모터
+}
+
+void loop() {
+  float cycletime; //시간
+  float distance; //거리
+  
+  digitalWrite(trig, HIGH); //digitalwrite를 통해 trig에서 초음파가 송신하도록 HIGH 명령을 줌
+  delay(10); //10m/s delay
+  digitalWrite(trig, LOW); //LOW로 신호 끔
+
+  cycletime = pulseIn(echo, HIGH); //송신된 초음파가 물체에 반사되어 echo 수신(신호가 HIGH전환)될떄까지의 시간 측정
+  distance = ((340*cycletime)/10000)/2; //초음파의 속도 340m/s cm단위 왕복거리이므로 나누기 2
+
+  Serial.print("Distance :");
+  Serial.print(distance);
+  Serial.println("cm");
+  delay(500);
+
+//진동모터
+   if (distance >= 30 && distance <= 50) {
+      digitalWrite(3, 50);// 진동세기 작게 analogwrite 써도 됨
+      delay(1000); // 1초 울림
+      digitalWrite(3, 0);
+      delay(500); // 2초 멈춤
+   }
+   else if (distance >= 10 && distance < 30) {
+      digitalWrite(3, 150); // 진동세기 보통
+      delay(1000);
+      digitalWrite(3, 0);
+      delay(1500); // 3초 멈춤
+   }
+   else if (distance >= 0 && distance < 10) {
+      digitalWrite(3, 255); //진동세기 크게
+      delay(1000);
+      digitalWrite(3, 0);
+      delay(2500); // 4초 멈춤
+   }
+   delay(50);
+}
