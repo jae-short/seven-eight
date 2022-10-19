@@ -1,0 +1,42 @@
+int echo = 8; //핀번호
+int trig = 12;
+int speakerpin = 9;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(trig, OUTPUT); //송신
+  pinMode(echo, INPUT); //수신
+}
+
+void loop() {
+  float cycletime; //시간
+  float distance; //거리
+  
+  digitalWrite(trig, HIGH); //digitalwrite를 통해 trig에서 초음파가 송신하도록 HIGH 명령을 줌
+  delay(10); //10m/s delay
+  digitalWrite(trig, LOW); //LOW로 신호 끔
+
+  cycletime = pulseIn(echo, HIGH); //송신된 초음파가 물체에 반사되어 echo 수신(신호가 HIGH전환)될떄까지의 시간 측정
+  distance = ((340*cycletime)/10000)/2; //초음파의 속도 340m/s cm단위 왕복거리이므로 나누기 2
+
+  Serial.print("Distance :");
+  Serial.print(distance);
+  Serial.println("cm");
+  delay(500);
+
+  //피에조수동부저
+  int speakerpin = 9;
+
+  if (distance >= 80 && distance <= 120) {
+      tone(speakerpin, 1500, 500); //음의 높낮이 2000, 음의 지속시간 1초
+      delay(1000); //1초 딜레이
+   }
+   else if (distance < 80 && distance >= 40) {
+      tone(speakerpin, 1500, 500);
+      delay(500); //0.5초 딜레이
+   }
+   else if (distance < 40 && distance >= 0) {
+      tone(speakerpin, 1500, 500);
+      delay(100); //0.1초 딜레이
+   }   
+}
